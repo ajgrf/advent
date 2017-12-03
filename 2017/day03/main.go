@@ -15,23 +15,27 @@ type pos struct {
 // coordinates finds the Cartesian coordinates of the given address, if 1 were
 // located at (0, 0).
 func coordinates(addr int) pos {
+	var x, y int
+
 	if addr < 1 {
 		panic("coordinates: Memory addresses must be >= 1")
 	}
 
-	var x, y, diffX, diffY int
-
+	// The largest square number which is still smaller than addr
 	largestSquare := int(math.Sqrt(float64(addr)))
-	diff := addr - (largestSquare * largestSquare)
 
-	if diff == 0 {
-		diffX = 0
-		diffY = 0
-	} else {
+	// diff is the remaining spaces we need to go past the largestSquare
+	diff := addr - (largestSquare * largestSquare)
+	// diffX and diffY break it down into up/down & left/right movements
+	diffX, diffY := 0, 0
+	if diff != 0 {
 		diffX = min(1, largestSquare-diff+2)
 		diffY = min(diff-1, largestSquare)
 	}
 
+	// Add or subtract diffX & diffY with the coordinate for largestSquare,
+	// depending on whether it's an even square near a top left corner in the
+	// spiral, or an odd square near a bottom right corner.
 	if largestSquare%2 == 0 {
 		x = -largestSquare/2 + 1 - diffX
 		y = largestSquare/2 - diffY
