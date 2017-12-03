@@ -7,13 +7,18 @@ import (
 
 const addr = 325489
 
+type pos struct {
+	x, y int
+}
+
 // coordinates finds the Cartesian coordinates of the given address, if 1 were
 // located at (0, 0).
-func coordinates(addr int) (x, y int) {
+func coordinates(addr int) pos {
+	var x, y, diffX, diffY int
+
 	largestSquare := int(math.Sqrt(float64(addr)))
 	diff := addr - (largestSquare * largestSquare)
 
-	var diffX, diffY int
 	if corner := largestSquare + 1; diff == 0 {
 		diffX = 0
 		diffY = 0
@@ -32,11 +37,11 @@ func coordinates(addr int) (x, y int) {
 		x = largestSquare/2 + diffX
 		y = -largestSquare/2 + diffY
 	}
-	return
+	return pos{x, y}
 }
 
-func distance(x, y int) int {
-	return abs(x) + abs(y)
+func distance(p pos) int {
+	return abs(p.x) + abs(p.y)
 }
 
 func abs(n int) int {
@@ -46,16 +51,16 @@ func abs(n int) int {
 	return n
 }
 
-func neighbors(x, y int) [][2]int {
-	return [][2]int{
-		{x + 1, y},
-		{x + 1, y + 1},
-		{x, y + 1},
-		{x - 1, y + 1},
-		{x - 1, y},
-		{x - 1, y - 1},
-		{x, y - 1},
-		{x + 1, y - 1},
+func neighbors(p pos) []pos {
+	return []pos{
+		{p.x + 1, p.y},
+		{p.x + 1, p.y + 1},
+		{p.x, p.y + 1},
+		{p.x - 1, p.y + 1},
+		{p.x - 1, p.y},
+		{p.x - 1, p.y - 1},
+		{p.x, p.y - 1},
+		{p.x + 1, p.y - 1},
 	}
 }
 
@@ -64,14 +69,14 @@ func main() {
 	fmt.Println(distance(coordinates(addr)))
 
 	// Part 2
-	var grid = map[[2]int]int{{0, 0}: 1}
+	var grid = map[pos]int{{0, 0}: 1}
 	for i := 1; ; i++ {
-		x, y := coordinates(i)
-		for _, neighbor := range neighbors(x, y) {
-			grid[[2]int{x, y}] += grid[neighbor]
+		p := coordinates(i)
+		for _, neighbor := range neighbors(p) {
+			grid[p] += grid[neighbor]
 		}
 
-		if val := grid[[2]int{x, y}]; val > addr {
+		if val := grid[p]; val > addr {
 			fmt.Println(val)
 			break
 		}

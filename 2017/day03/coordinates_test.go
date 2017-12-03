@@ -36,9 +36,9 @@ var coordinateTests = []struct {
 
 func TestCoordinates(t *testing.T) {
 	for _, tt := range coordinateTests {
-		x, y := coordinates(tt.addr)
-		if x != tt.x || y != tt.y {
-			t.Errorf("coordinates(%d) - expected=(%d,%d), got=(%d,%d)", tt.addr, tt.x, tt.y, x, y)
+		p := coordinates(tt.addr)
+		if p.x != tt.x || p.y != tt.y {
+			t.Errorf("coordinates(%d) - expected=(%d,%d), got=(%d,%d)", tt.addr, tt.x, tt.y, p.x, p.y)
 		}
 	}
 }
