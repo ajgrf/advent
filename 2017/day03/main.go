@@ -21,7 +21,7 @@ func coordinates(addr int) pos {
 		panic("coordinates: Memory addresses must be >= 1")
 	}
 
-	// The largest square number which is still smaller than addr
+	// The largest number which is still smaller than addr when squared
 	largestSquare := int(math.Sqrt(float64(addr)))
 
 	// diff is the remaining spaces we need to go past the largestSquare
