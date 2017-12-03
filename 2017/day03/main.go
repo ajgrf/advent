@@ -30,7 +30,7 @@ func coordinates(addr int) (x, y int) {
 		y = largestSquare/2 - diffY
 	} else {
 		x = largestSquare/2 + diffX
-		y = -x + diffY
+		y = -largestSquare/2 + diffY
 	}
 	return
 }
