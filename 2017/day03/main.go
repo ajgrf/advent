@@ -40,7 +40,7 @@ func coordinates(addr int) pos {
 	return pos{x, y}
 }
 
-func distance(p pos) int {
+func distanceFromAccessPort(p pos) int {
 	return abs(p.x) + abs(p.y)
 }
 
@@ -66,7 +66,7 @@ func neighbors(p pos) []pos {
 
 func main() {
 	// Part 1
-	fmt.Println(distance(coordinates(addr)))
+	fmt.Println(distanceFromAccessPort(coordinates(addr)))
 
 	// Part 2
 	var grid = map[pos]int{{0, 0}: 1}
