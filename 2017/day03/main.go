@@ -14,6 +14,10 @@ type pos struct {
 // coordinates finds the Cartesian coordinates of the given address, if 1 were
 // located at (0, 0).
 func coordinates(addr int) pos {
+	if addr < 1 {
+		panic("coordinates: Memory addresses must be >= 1")
+	}
+
 	var x, y, diffX, diffY int
 
 	largestSquare := int(math.Sqrt(float64(addr)))
@@ -37,6 +41,7 @@ func coordinates(addr int) pos {
 		x = largestSquare/2 + diffX
 		y = -largestSquare/2 + diffY
 	}
+
 	return pos{x, y}
 }
 
