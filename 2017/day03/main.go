@@ -7,6 +7,7 @@ import (
 
 const addr = 325489
 
+// pos represents the coordinates of a square on the grid.
 type pos struct {
 	x, y int
 }
