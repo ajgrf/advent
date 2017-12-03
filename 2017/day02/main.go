@@ -49,7 +49,7 @@ func evenDivision(row []int) int {
 			}
 		}
 	}
-	return -1
+	return 0
 }
 
 func sheetSum(sheet [][]int, sumFn func([]int) int) int {
