@@ -46,7 +46,34 @@ func abs(n int) int {
 	return n
 }
 
+func neighbors(x, y int) [][2]int {
+	return [][2]int{
+		{x + 1, y},
+		{x + 1, y + 1},
+		{x, y + 1},
+		{x - 1, y + 1},
+		{x - 1, y},
+		{x - 1, y - 1},
+		{x, y - 1},
+		{x + 1, y - 1},
+	}
+}
+
 func main() {
 	// Part 1
 	fmt.Println(distance(coordinates(addr)))
+
+	// Part 2
+	var grid = map[[2]int]int{{0, 0}: 1}
+	for i := 1; ; i++ {
+		x, y := coordinates(i)
+		for _, neighbor := range neighbors(x, y) {
+			grid[[2]int{x, y}] += grid[neighbor]
+		}
+
+		if val := grid[[2]int{x, y}]; val > addr {
+			fmt.Println(val)
+			break
+		}
+	}
 }
