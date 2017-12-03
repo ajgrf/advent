@@ -24,15 +24,12 @@ func coordinates(addr int) pos {
 	largestSquare := int(math.Sqrt(float64(addr)))
 	diff := addr - (largestSquare * largestSquare)
 
-	if corner := largestSquare + 1; diff == 0 {
+	if diff == 0 {
 		diffX = 0
 		diffY = 0
-	} else if diff <= corner {
-		diffX = 1
-		diffY = diff - 1
-	} else if diff >= corner {
-		diffX = -(diff - largestSquare - 2)
-		diffY = largestSquare
+	} else {
+		diffX = min(1, largestSquare-diff+2)
+		diffY = min(diff-1, largestSquare)
 	}
 
 	if largestSquare%2 == 0 {
@@ -44,6 +41,13 @@ func coordinates(addr int) pos {
 	}
 
 	return pos{x, y}
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
 
 func distanceFromAccessPort(p pos) int {
