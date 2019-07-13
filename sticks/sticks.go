@@ -6,13 +6,12 @@ import (
 	"fmt"
 	"math"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
 
-// Stick is the line segment on a two-dimensional plane going from point A to
-// point B, inclusive.
+// Stick is the line segment on a two-dimensional plane going from point 1 to
+// point 2, inclusive.
 type Stick struct {
 	ID     int
 	X1, Y1 float64
@@ -40,7 +39,8 @@ func ParseStick(s string) (Stick, error) {
 	return Stick{id, x1, y1, x2, y2}, nil
 }
 
-// IsAbove returns whether or not any part of Stick l is above m.
+// IsAbove returns whether or not any part of Stick l is directly above m,
+// assuming they do not overlap.
 func (l Stick) IsAbove(m Stick) bool {
 	switch {
 	case l.At(m.X1) >= m.Y1,
@@ -55,7 +55,7 @@ func (l Stick) IsAbove(m Stick) bool {
 
 // At returns l's y value at the specified x.
 func (l Stick) At(x float64) float64 {
-	// make sure point 1 is left of 2
+	// make sure point 2 isn't left of 1
 	if l.X2 < l.X1 {
 		l.X1, l.Y1, l.X2, l.Y2 = l.X2, l.Y2, l.X1, l.Y1
 	}
@@ -77,20 +77,40 @@ func (l Stick) slope() float64 {
 	return (l.Y2 - l.Y1) / (l.X2 - l.X1)
 }
 
+// UPDATE ME:
 // StickSlice implements sort.Interface for []Stick, producing a safe order in
 // which to remove them from above without disturbing the other sticks. All
 // sticks are assumed to not overlap.
 type StickSlice []Stick
 
-func (p StickSlice) Len() int           { return len(p) }
-func (p StickSlice) Less(i, j int) bool { return p[i].IsAbove(p[j]) }
-func (p StickSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (p StickSlice) Sort() {
+	for i := range p {
+		sticks := p[i:]
+		for j := range sticks {
+			if sticks.CanRemove(j) {
+				p[i], p[i+j] = p[i+j], p[i]
+				break
+			}
+		}
+	}
+}
+
+func (p StickSlice) CanRemove(i int) bool {
+	for j := range p {
+		if i == j {
+			continue
+		} else if p[j].IsAbove(p[i]) {
+			return false
+		}
+	}
+	return true
+}
 
 // mustParseInt returns the int represented by s, or else.
 func mustParseInt(s string) int {
 	n, err := strconv.ParseInt(s, 10, 0)
 	if err != nil {
-		panic("mustParseInt:" + err.Error())
+		panic("mustParseInt: " + err.Error())
 	}
 	return int(n)
 }
@@ -99,7 +119,7 @@ func mustParseInt(s string) int {
 func mustParseFloat(s string) float64 {
 	x, err := strconv.ParseFloat(s, 64)
 	if err != nil {
-		panic("mustParseFloat:" + err.Error())
+		panic("mustParseFloat: " + err.Error())
 	}
 	return x
 }
@@ -135,7 +155,7 @@ func main() {
 		panic(err)
 	}
 
-	sort.Sort(StickSlice(sticks))
+	StickSlice(sticks).Sort()
 	sortedIDs := make([]string, n)
 	for i := range sticks {
 		sortedIDs[i] = strconv.FormatInt(int64(sticks[i].ID), 10)
